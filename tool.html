@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riff</title>
+    <!-- Importing the styles -->
+    <link rel="stylesheet" href="styles.css"></link>
+    <script type="text/javascript" src="vendor/lodash.js"></script>
+</head>
+<body>
+    <nav class="global-nav">
+        <a href="index.html">ABOUT</a>
+        <a href="tool.html" class="active">TYPETOOL</a>
+    </nav>
+    <div id="container">
+        <!-- Your Contents -->
+        <aside>
+            <div id="footer"></div>
+            <div id="controls"></div>
+        </aside>
+
+        <main id="main">
+   
+            <!-- Preview glyph -->
+            <section id="typing" contenteditable="false">
+                <svg viewBox="0 0 1000 1000" id="svg-text"></svg>
+            </section>
+
+            <!-- 预设控制栏 -->
+            <div id="preset-panel">
+                <div class="preset-header">预设</div>
+                <div id="preset-buttons"></div>
+            </div>
+
+            <!--  -->
+            <footer id="footer">
+            </footer>
+        </main>
+    </div>
+    <!-- Importing the script at the bottom! -->
+     <!-- This is our Font file -->
+    <script type="text/javascript" src="scripts/font.js"></script>
+    <!-- This is our pixel shape -->
+    <script type="text/javascript" src="scripts/renderPixel.js"></script>
+    <!-- This includes the main logic for rendering glyphs -->
+    <script type="text/javascript" src="scripts/script.js"></script>
+
+    <!-- Interactive Parts -->
+    
+    <!-- This is our controls file – it affects the rendering of our glyphs -->
+    <script type="text/javascript" src="scripts/controls.js"></script>
+    <!-- 预设管理器 -->
+    <script type="text/javascript" src="scripts/presets.js"></script>
+</body>
+</html>

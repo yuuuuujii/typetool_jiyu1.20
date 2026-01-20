@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Riff</title>
+    <!-- Google Fonts: IBM Plex Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* 防止出现滚动条 */
+        }
+
+        body {
+            background-color: #AAAEB9; /* 页面背景色 */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* 上下分布 */
+        }
+
+        /* 顶部说明文本区域 */
+        .description-section {
+            padding-top: 90px;
+            padding-left: 20px;
+            /* 限制最大宽度 */
+            max-width: 1000px; /* 600px text + 50px padding */
+        }
+
+        /* 文本排版设置 */
+        .description-text {
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 400; /* Light 300 base */
+            color: #FFFFFF; /* 纯白色 */
+            opacity: 1; /* 降低对比度以减少视觉发散 */
+            
+            /* 模拟字重 350 */
+            -webkit-text-stroke: 0px #AAAEB9;
+            
+            /* 严格尺寸设置 */
+            font-size: 17.2px !important;
+            line-height: 21.3px !important;
+
+            /* 字体平滑处理 */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            
+            margin-bottom: 20px; /* 段落间距 20px */
+            max-width: 1000px; /* 文本宽度限制 */
+        }
+
+        /* 底部视觉区域 */
+        .visual-grid {
+            display: flex;
+            width: 100%;
+            height: 65vh; /* 增加高度：从 50vh 调整为 65vh */
+            align-items: flex-end; /* 底部对齐 */
+            gap: 2px; /* 使得背景色透露出来作为间隙 */
+            background-color: #000000; /* 背景设为黑色，作为"黑色间隙"的来源 */
+        }
+
+        /* 网格内的三个容器 */
+        /* 删除旧的 .grid-block 定义以防止冲突，现在使用 .video-block 和 .square-block */
+        /* .grid-block { ... } */
+        
+        /* 第三个空白块作为填充，占据剩余空间 */
+        /* .grid-block:last-child { ... } */
+
+        /* 覆盖上面的 .visual-grid gap 颜色逻辑 */
+        
+        /* 覆盖上面的 .visual-grid gap 颜色逻辑 */
+        .visual-grid {
+            background-color: transparent;
+            /* 移除 gap，由 track 控制 */
+            gap: 0; 
+            position: relative; /* 为按钮定位 */
+            overflow: hidden; /* 隐藏超出部分 */
+        }
+
+        /* 滚动轨道 */
+        .grid-track {
+            display: flex;
+            height: 100%;
+            width: max-content; /* 让宽度根据内容自动撑开 */
+            gap: 4px; /* 间隙加大 */
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); /* 平滑滚动动画 */
+        }
+
+        /* 普通视频容器：宽度自适应 */
+        .video-block {
+            height: 100%;
+            background-color: #000000;
+            overflow: hidden;
+            flex: 0 0 auto;
+            width: auto;
+        }
+
+        /* 正方形容器 */
+        .square-block {
+            height: 100%;
+            /* 自动保持正方形比例，随高度变化而变化 */
+            aspect-ratio: 1 / 1;
+            width: auto;
+            flex: 0 0 auto;
+            background-color: #000000;
+        }
+
+        .video-block video {
+            width: auto;
+            height: 100%;
+            display: block;
+        }
+
+        /* 滚动按钮样式 */
+        .scroll-btn {
+            position: absolute;
+            right: 20px;
+            bottom: 50%; /* 垂直居中于底部区域 */
+            transform: translateY(50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            /* 降低透明度，增加磨砂感 */
+            background-color: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            /* 自然的缓动动画 */
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .scroll-btn:hover {
+            background-color: rgba(255, 255, 255, 0.95);
+            transform: translateY(50%) scale(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        /* 箭头图标 */
+        .arrow-icon {
+            width: 16px;
+            height: 16px;
+            border-top: 2px solid #000;
+            border-right: 2px solid #000;
+            transform: rotate(45deg);
+            margin-left: -4px; /* 视觉修正 */
+        }
+
+    </style>
+</head>
+<body>
+	<nav class="global-nav">
+        <a href="index.html" class="active">ABOUT</a> 
+        <a href="tool.html">TYPETOOL</a>
+    </nav>
+
+    <!-- 顶部：说明文本 -->
+    <section class="description-section">
+        <p class="description-text">
+            “Riff” is a variable typeface based on continuous change. Emerging from a single underlying structure, it moves, stretches, and folds across multiple dimensions—like musical improvisation: repetitive, yet never exactly the same. Rather than forming fixed states, the type exists in constant transition, shaped by ongoing variation. Each adjustment generates new echoes between structure and rhythm, allowing the letters to breathe, flow, and transform over time. These shifts unfold gradually, revealing subtle differences within repetition and emphasizing process over outcome.
+        </p>
+        <p class="description-text">
+            Through varying degrees of freedom and subtle color gradients, the same skeletal form is continuously re-explored, producing a wide spectrum of typographic expressions. Form, motion, and color operate together as interdependent parameters, responding to one another in a dynamic system.
+        </p>
+    </section>
+
+    <!-- 底部：视觉网格 -->
+    <section class="visual-grid" id="visualGrid">
+        <div class="grid-track" id="gridTrack">
+            <!-- 容器 1: 视频 -->
+            <div class="video-block">
+                <video src="3.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <!-- 容器 2: 视频 -->
+            <div class="video-block">
+                <video src="1.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <!-- 容器 3: 正方形 -->
+            <div class="square-block"></div>
+            <!-- 容器 4: 正方形 -->
+            <div class="square-block"></div>
+            <!-- 容器 5: 正方形 -->
+            <div class="square-block"></div>
+        </div>
+        
+        <!-- 右滑按钮 -->
+        <button class="scroll-btn" id="scrollBtn">
+            <div class="arrow-icon"></div>
+        </button>
+    </section>
+
+    <script>
+        const scrollBtn = document.getElementById('scrollBtn');
+        const gridTrack = document.getElementById('gridTrack');
+        const visualGrid = document.getElementById('visualGrid');
+        
+        let currentScroll = 0;
+
+        scrollBtn.addEventListener('click', () => {
+            const trackWidth = gridTrack.scrollWidth;
+            const containerWidth = visualGrid.clientWidth;
+            const maxScroll = trackWidth - containerWidth;
+            
+            // 如果还没滑到底，就向左滑（显示右侧内容）
+            // 每次滑动的距离设定为视口宽度的一半，或者根据需要调整
+            if (currentScroll < maxScroll - 10) { // -10 为容差
+                let nextScroll = currentScroll + (containerWidth * 0.6);
+                if (nextScroll > maxScroll) nextScroll = maxScroll;
+                currentScroll = nextScroll;
+            } else {
+                // 如果已经到底了，则重置回起点 (Toggle效果)
+                currentScroll = 0;
+            }
+            
+            gridTrack.style.transform = `translateX(-${currentScroll}px)`;
+            
+            // 旋转箭头方向指示回弹
+            const arrow = scrollBtn.querySelector('.arrow-icon');
+            if (currentScroll >= maxScroll - 10) {
+                 arrow.style.transform = 'rotate(-135deg)'; // 向左指
+                 arrow.style.marginLeft = '4px';
+            } else {
+                 arrow.style.transform = 'rotate(45deg)'; // 向右指
+                 arrow.style.marginLeft = '-4px';
+            }
+        });
+    </script>

@@ -1,0 +1,951 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* ===== 字体声明 (已修复：拆分定义) ===== */
+@font-face {
+    font-family: 'PP Rader';
+    src: url('./fonts/PPRader-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ZNVT9';
+    src: url('./fonts/ZNVT9.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 修复：Regular 和 Medium 必须分开定义 */
+@font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('./fonts/IBMPlexMono-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'IBM Plex Mono Medium';
+    src: url('./fonts/IBMPlexMono-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+/* ===== 全局字体强制应用 ===== */
+/* 注意：这里的 ZNVT9 会被后面的 !important 覆盖 */
+label, span {
+    font-family: 'ZNVT9', sans-serif !important;
+    color: #9AA3A9 !important;
+}
+
+.preset-header {
+    font-family: 'IBM Plex Mono Medium', monospace !important;
+    font-weight: 500 !important;
+    font-size: 22px !important;
+    color: var(--summary-text-color, #9AA3A9) !important;
+    letter-spacing: -0.5px !important;
+    text-transform: uppercase;
+    line-height: 1.1;
+    border-bottom: 1px solid var(--text-color);
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+}
+
+/* 专门针对控制栏标签和数值的样式覆盖 */
+.control-label,
+.control-value,
+.pixel-shape-label,
+.xy-pad-label,
+.label-row label,
+.label-row span {
+    font-family: 'IBM Plex Mono', 'IBM Plex Mono-Regular', monospace !important;
+    font-weight: 400 !important;
+    color: #9AA3A9 !important;
+}
+
+/* ===== 模块 1: 全局容器与排版 ===== */
+
+/* 全局顶部导航栏 */
+.global-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    padding: 20px;
+    display: flex;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.global-nav a {
+    pointer-events: auto;
+    font-family: 'PP Rader', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: normal;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    
+    /* 👇👇👇 修改：使用变量，自动适应背景黑白 👇👇👇 */
+    color: var(--text-color); 
+    border: 1px solid var(--text-color);
+    background-color: transparent;
+    /* 👆👆👆 修改结束 👆👆👆 */
+
+    text-decoration: none;
+    border-radius: 30px;
+    padding: 7px 20px 0px 20px;
+    outline: none;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(2px);
+}
+
+.global-nav a:hover {
+    /* 👇👇👇 修改：悬停时反转颜色 👇👇👇 */
+    background-color: var(--text-color);
+    color: var(--panel-bg-color);
+    /* 👆👆👆 修改结束 👆👆👆 */
+}
+
+/* 特殊颜色保持不变 (ABOUT - 粉色) */
+.global-nav a[href="about.html"]:hover {
+    background-color: #FF00FF;
+    color: #FFFFFF;
+    border: 1px solid #FF00FF;
+}
+
+/* 特殊颜色保持不变 (TYPETOOL - 绿色) */
+.global-nav a[href="index.html"]:hover {
+    background-color: #00d80e;
+    color: #FFFFFF;
+    border: 1px solid #00d80e;
+}
+
+/* 激活状态 */
+.global-nav a[href="index.html"]:active,
+.global-nav a[href="index.html"].active {
+    background-color: #00d80e !important;
+    color: #000000 !important;
+    border: 1px solid #00d80e !important;
+}
+
+.global-nav a[href="about.html"]:active,
+.global-nav a[href="about.html"].active {
+    background-color: #FF00FF !important;
+    color: #FFFFFF !important;
+    border: 1px solid #FF00FF !important;
+}
+
+/* 兜底逻辑 (nth-child) */
+.global-nav a:nth-child(1):hover,
+.global-nav a:nth-child(1):active,
+.global-nav a:nth-child(1).active {
+    background-color: #FF00FF !important;
+    color: #000000 !important;
+    border: 1px solid #FF00FF !important;
+}
+
+.global-nav a:nth-child(2):hover,
+.global-nav a:nth-child(2):active,
+.global-nav a:nth-child(2).active {
+    background-color: #00d80e !important;
+    color: #000000 !important;
+    border: 1px solid #00d80e !important;
+}
+
+#container {
+    display: grid;
+    grid-template-columns: 238px 1fr;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    overflow: hidden;
+    transform: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+aside {
+    background-color: var(--panel-bg-color);
+    color: var(--text-color);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    width: 280px; 
+    height: 117.65vh; 
+    position: relative;
+    padding: 20px;
+    padding-top: 70px; 
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    border-right: none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    transform: scale(0.85);
+    transform-origin: top left;
+}
+
+aside::-webkit-scrollbar {
+    display: none;
+}
+
+#controls {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+#preview, #typing {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    width: 100%;
+    height: 100%;
+}
+
+#typing {
+    position: relative;
+    cursor: text;
+}
+
+#main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    background-color: #ffffff;
+}
+
+svg {
+    overflow: visible;
+    width: 100%;
+    height: auto;
+}
+
+.grid line {
+    stroke: none;
+}
+
+svg.showGrid .grid line {
+    stroke: gray !important;
+}
+
+/* ===== 模块 2: 可折叠面板头部 (Accordion Header) ===== */
+
+details {
+    margin-top: 0;
+    margin-bottom: 8px;
+    position: relative;
+    background-color: var(--panel-bg-color);
+    color: var(--text-color);
+}
+
+/* 默认状态 */
+details > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 6px 16px; /* 稍微增加垂直padding */
+    background-color: var(--panel-bg-color);
+    
+    /* 强制使用 Medium 字体 */
+    font-family: 'IBM Plex Mono Medium', monospace !important;
+    font-weight: 500 !important;
+    font-size: 22px !important;
+    
+    letter-spacing: -0.5px !important;
+    text-transform: uppercase;
+    line-height: 1.1;
+    border-radius: 999px;
+    border: 1px solid var(--summary-text-color, #9AA3A9);
+    outline: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    overflow: hidden;
+    user-select: none;
+    transition: background-color 0.3s ease, border-radius 0.3s ease, margin-bottom 0.3s ease;
+    margin-bottom: 0;
+    color: var(--summary-text-color, #9AA3A9) !important;
+}
+
+details > summary::-webkit-details-marker {
+    display: none;
+}
+
+/* 激活/展开状态 */
+details[open] > summary {
+    background-color: #9AA3A9 !important;
+    color: #000000 !important;
+    border-color: transparent !important;
+    border-radius: 999px !important;
+    margin-bottom: 16px !important;
+    
+    /* 展开后保持 Medium 字体 */
+    font-family: 'IBM Plex Mono Medium', monospace !important;
+    font-weight: 500 !important;
+    font-size: 22px !important;
+}
+
+/* 强制展开状态下的所有子元素也继承字体 */
+details[open] > summary * {
+    color: #000000 !important;
+    font-family: 'IBM Plex Mono Medium', monospace !important;
+}
+
+/* ===== 模块 3: 面板内容区域 ===== */
+
+.control-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+    margin-bottom: 2px !important;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.control-row:last-child {
+    margin-bottom: 0;
+}
+
+.control-label {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--text-color);
+    white-space: nowrap;
+    flex-shrink: 0;
+    flex-basis: 100px;
+}
+
+.control-slider {
+    flex: 1;
+    min-width: 60px;
+    background-color: #1a1a1a;
+    padding: 2px 8px;
+    height: 24px;
+    border-radius: 4px;
+}
+
+input[type="range"] {
+    width: 100%;
+    height: 12px;
+    border-radius: 0;
+    background: transparent;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    margin: 0;
+    display: block;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 0px !important;
+    background: transparent;
+    border-bottom: 1px solid #555555;
+    border-radius: 0;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text-color);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin-top: -5px;
+}
+
+input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 0px !important;
+    background: transparent;
+    border-bottom: 1px solid #555555;
+    border-radius: 0;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text-color);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.control-value {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--text-color);
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: auto;
+    min-width: 40px;
+    text-align: right;
+}
+
+/* ===== 模块 4: XY 坐标轴控制器 ===== */
+
+.xy-pad-wrapper {
+    padding: 10px 16px;
+    margin-bottom: 8px;
+}
+
+.xy-pad-label {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--text-color);
+    margin-bottom: 8px;
+    display: block;
+}
+
+.xy-pad-container {
+    width: 140px;
+    height: 140px;
+    background-color: var(--panel-bg-color);
+    border: 1px solid var(--text-color);
+    border-radius: 4px;
+    position: relative;
+    cursor: crosshair;
+    margin: 0 auto;
+}
+
+.xy-pad-axis-h {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: var(--text-color);
+    top: 50%;
+    left: 0;
+    pointer-events: none;
+}
+
+.xy-pad-axis-v {
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    background-color: var(--text-color);
+    left: 50%;
+    top: 0;
+    pointer-events: none;
+}
+
+.xy-pad-handle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: var(--text-color);
+    border-radius: 50%;
+    border: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: grab;
+    pointer-events: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.xy-pad-handle:active {
+    cursor: grabbing;
+}
+
+.xy-pad-labels {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 10px;
+    color: var(--text-color);
+}
+
+.xy-pad-label-top {
+    position: absolute;
+    top: -15px;
+    right: 0;
+    font-size: 10px;
+}
+
+.xy-pad-label-right {
+    position: absolute;
+    bottom: 0;
+    right: -18px;
+    font-size: 10px;
+}
+
+/* ===== 底部导航 ===== */
+
+#footer {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.capsule-btn {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--text-color);
+    background-color: transparent;
+    border: 1px solid var(--text-color);
+    border-radius: 50px;
+    padding: 6px 14px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s ease;
+    outline: none;
+    line-height: 1.2;
+}
+
+@keyframes jelly {
+    0% { transform: scale(1, 1); }
+    30% { transform: scale(1.25, 0.75); }
+    40% { transform: scale(0.75, 1.25); }
+    50% { transform: scale(1.15, 0.85); }
+    65% { transform: scale(0.95, 1.05); }
+    75% { transform: scale(1.05, 0.95); }
+    100% { transform: scale(1, 1); }
+}
+
+.capsule-btn:hover {
+    background-color: var(--text-color);
+    color: var(--panel-bg-color);
+    border-color: var(--text-color);
+    animation: jelly 0.6s ease-in-out;
+}
+
+.capsule-btn:active {
+    background-color: #E8E8E8;
+    color: #000000;
+}
+
+/* ===== 其他元素 ===== */
+
+select {
+    width: 100%;
+    padding: 8px 12px;
+    margin: 8px 0;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    color: #333333;
+}
+
+details[open] select {
+    background-color: #f5f5f5;
+}
+
+select:hover {
+    border-color: #999999;
+}
+
+select:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 4px rgba(0, 102, 204, 0.5);
+}
+
+input[type="color"] {
+    width: 100%;
+    height: 40px;
+    padding: 2px;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 8px 0;
+}
+
+input[type="color"]:hover {
+    border-color: #999999;
+}
+
+input[type="color"]:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 4px rgba(0, 102, 204, 0.5);
+}
+
+/* ===== 重构：颜色面板色块样式 ===== */
+.color-palette-input {
+    -webkit-appearance: none;
+    appearance: none;
+    background: none;
+    border: none !important;
+    padding: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.color-palette-input::-webkit-color-swatch-wrapper {
+    padding: 0; 
+}
+
+.color-palette-input::-webkit-color-swatch {
+    border: 1px solid #555555; 
+    border-radius: 2px;
+}
+
+.color-palette-input::-moz-color-swatch {
+    border: 1px solid #555555;
+    border-radius: 2px;
+}
+
+.transparency-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    border: 1px solid #555555;
+    border-radius: 2px;
+    background-color: #ffffff;
+    background-image: linear-gradient(to top right, 
+        transparent calc(50% - 1.5px), 
+        #ff0000 calc(50% - 1.5px), 
+        #ff0000 calc(50% + 1.5px), 
+        transparent calc(50% + 1.5px)
+    );
+}
+
+.clear-color-btn {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 16px; 
+    height: 16px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 1px solid #999;
+    z-index: 2;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    background-image: linear-gradient(45deg, 
+        transparent 42%, 
+        red 42%, 
+        red 58%, 
+        transparent 58%
+    );
+}
+
+.clear-color-btn:hover {
+    transform: scale(1.1);
+}
+
+.color-input-wrapper:hover .clear-color-btn {
+    opacity: 1;
+}
+
+/* ===== 预设面板 ===== */
+
+#preset-panel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--panel-bg-color);
+    border: 1px solid var(--text-color);
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 200;
+    min-width: 200px;
+}
+
+.preset-header {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--text-color);
+    padding-bottom: 8px;
+}
+
+#preset-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.preset-btn {
+    font-family: 'IBM Plex Mono Medium', monospace !important;
+    font-weight: 500 !important;
+    font-size: 22px !important;
+    color: var(--summary-text-color, #9AA3A9) !important;
+    letter-spacing: -0.5px !important;
+    text-transform: uppercase;
+    line-height: 1.1;
+    border-radius: 999px;
+    border: 1px solid var(--summary-text-color, #9AA3A9);
+    outline: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    overflow: hidden;
+    user-select: none;
+    transition: background-color 0.3s ease, border-radius 0.3s ease, margin-bottom 0.3s ease;
+    margin-bottom: 0;
+    padding: 8px 14px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.preset-btn:hover {
+    background: var(--text-color);
+    color: var(--panel-bg-color);
+    border-color: var(--text-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(255, 255, 255, 0.2);
+}
+
+.preset-btn.active {
+    background: var(--text-color);
+    color: var(--panel-bg-color);
+    border-color: var(--text-color);
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+}
+
+#preset-buttons > :nth-child(3) {
+    display: none;
+}
+
+/* ===== 滚动条美化 ===== */
+
+aside::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+aside::-webkit-scrollbar-thumb {
+    background: #444444;
+    border-radius: 3px;
+}
+
+aside::-webkit-scrollbar-thumb:hover {
+    background: #555555;
+}
+
+/* ===== Advanced Controls 区域 ===== */
+
+.advanced-controls-section {
+    margin-bottom: 12px;
+    position: relative;
+    background-color: var(--panel-bg-color);
+    color: var(--text-color);
+}
+
+.advanced-controls-header {
+    list-style: none;
+    cursor: pointer;
+    padding: 10px 16px;
+    background-color: var(--panel-bg-color);
+    color: var(--text-color);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    border-radius: 50px;
+    border: 1px solid var(--text-color);
+    outline: none;
+    display: inline-block;
+    width: fit-content;
+    overflow: hidden;
+    user-select: none;
+    transition: all 0.3s ease;
+    margin-bottom: 12px;
+}
+
+.advanced-controls-header:hover {
+    background-color: var(--text-color);
+    color: var(--panel-bg-color);
+    border-radius: 50px;
+    border: 1px solid transparent;
+}
+
+.advanced-controls-content {
+    display: none;
+}
+
+.advanced-controls-content.open {
+    display: block;
+}
+
+/* ===== Pixel Shape Icon Buttons ===== */
+
+.pixel-shape-group {
+    display: flex;
+    gap: 8px;
+    padding: 8px 16px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.pixel-shape-label {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--text-color);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.pixel-shape-buttons {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+}
+
+.pixel-shape-btn {
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--text-color);
+    background-color: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.pixel-shape-btn:hover {
+    border-color: var(--text-color);
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.pixel-shape-btn.active {
+    background-color: var(--text-color);
+    border-color: var(--text-color);
+}
+
+.pixel-shape-btn.circle-btn::before {
+    content: '';
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
+.pixel-shape-btn.circle-btn {
+    color: var(--text-color);
+}
+
+.pixel-shape-btn.circle-btn.active {
+    color: var(--panel-bg-color);
+}
+
+.pixel-shape-btn.square-btn::before {
+    content: '';
+    width: 14px;
+    height: 14px;
+    background-color: currentColor;
+}
+
+.pixel-shape-btn.square-btn {
+    color: var(--text-color);
+}
+
+.pixel-shape-btn.square-btn.active {
+    color: var(--panel-bg-color);
+}
+
+/* ===== 恢复播放按钮样式 ===== */
+
+.offset-play-btn {
+    width: 23px;
+    height: 23px;
+    min-width: 23px;
+    padding: 0;
+    background-color: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 10px;
+    font-weight: bold;
+    flex-shrink: 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.offset-play-btn:hover {
+    background-color: #444444;
+    border-color: var(--text-color);
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.offset-play-btn.playing {
+    background-color: var(--text-color);
+    border-color: var(--text-color);
+    color: var(--panel-bg-color);
+}
+
+.offset-play-btn.playing:hover {
+    background-color: #E8E8E8;
+    border-color: #E8E8E8;
+    color: var(--panel-bg-color);
+}
+
+:root {
+    --panel-bg-color: #000000;
+    --text-color: #FFFFFF;
+}
+
+/* ===== 光标动画 ===== */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.typing-cursor {
+    animation: blink 1s step-end infinite;
+    pointer-events: none;
+    transition: opacity 0.3s ease; /* 让消失变平滑一点 */
+}
+
+/* 隐藏状态：透明，且停止闪烁 */
+.typing-cursor.hidden {
+    opacity: 0 !important;
+    animation: none;
+}
